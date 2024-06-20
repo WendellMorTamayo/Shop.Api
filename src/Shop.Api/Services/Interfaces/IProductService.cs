@@ -1,7 +1,7 @@
 using Shop.Api.Models;
 using Shop.Api.Models.DTO;
 
-namespace Shop.Api.Services;
+namespace Shop.Api.Services.Interfaces;
 public interface IProductService
 {
     List<Product> GetProducts();

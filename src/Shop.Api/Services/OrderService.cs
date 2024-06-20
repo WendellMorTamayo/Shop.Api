@@ -1,6 +1,7 @@
 using Shop.Api.Data;
 using Shop.Api.Models;
 using Shop.Api.Models.DTO;
+using Shop.Api.Services.Interfaces;
 
 namespace Shop.Api.Services;
 
@@ -24,16 +25,10 @@ public class OrderService(DataStore dataStore) : IOrderService
     public IResult CreateOrder(OrderRequest createOrderRequest)
     {
         var product = _dataStore.Products.FirstOrDefault(p => p.Id == createOrderRequest.ProductId);
-        if (product is null)
-        {
-            return Results.BadRequest("Product not found.");
-        }
+        if (product is null) return Results.BadRequest("Product not found.");
 
         var customer = _dataStore.Customers.FirstOrDefault(c => c.Username == createOrderRequest.Username);
-        if (customer is null)
-        {
-            return Results.BadRequest("Customer not found.");
-        }
+        if (customer is null) return Results.BadRequest("Customer not found.");
 
         Order order = new(
             _dataStore.Orders.Count + 1,
@@ -50,16 +45,10 @@ public class OrderService(DataStore dataStore) : IOrderService
         if (index == -1) return Results.NotFound("Order with id not found.");
 
         var product = _dataStore.Products.FirstOrDefault(p => p.Id == updateOrderRequest.ProductId);
-        if (product is null)
-        {
-            return Results.BadRequest("Product not found.");
-        }
+        if (product is null) return Results.BadRequest("Product not found.");
 
         var customer = _dataStore.Customers.FirstOrDefault(c => c.Username == updateOrderRequest.Username);
-        if (customer is null)
-        {
-            return Results.BadRequest("Customer not found.");
-        }
+        if (customer is null) return Results.BadRequest("Customer not found.");
 
         _dataStore.Orders[index] = new(
             id,
