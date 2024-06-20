@@ -11,6 +11,7 @@ public static class CustomerEndpoint
     {
         return DataStore.Customers;
     }
+    
     private static IResult GetCustomerById(int id)
     {
         Customer? customer = DataStore.Customers.Find(c => c.Id == id);
