@@ -16,7 +16,7 @@ static class CustomerEndpoint
     {
         Customer? customer = Customers.Find(c => c.Id == id);
 
-        return customer is null ? Results.NotFound() : Results.Ok(customer);
+        return customer is null ? Results.NotFound("Customer not found!") : Results.Ok(customer);
     }
 
     public static IResult CreateCustomer(CustomerDTO createCustomerDTO)
@@ -34,19 +34,25 @@ static class CustomerEndpoint
             createCustomerDTO.Email
         );
         Customers.Add(customer);
-        return Results.CreatedAtRoute(GetCustomerEndpoint, new { username = customer.Username }, customer);
+        return Results.CreatedAtRoute(GetCustomerEndpoint, new { id = customer.Id }, customer);
     }
 
     public static IResult UpdateCustomerByUsername(int id, CustomerDTO updateCustomerDTO)
     {
         var index = Customers.FindIndex((c) => c.Id == id);
-        if (index != -1)
+        if (index == -1)
         {
-            return Results.BadRequest("Username does not exist.");
+            return Results.BadRequest("Customer with id not found.");
+        }
+
+        var existingUsername = Customers.FirstOrDefault((c) => c.Username == updateCustomerDTO.Username);
+        if (existingUsername is not null)
+        {
+            return Results.BadRequest("Username already exists.");
         }
 
         Customers[index] = new(
-            Customers.Count + 1,
+            id,
             updateCustomerDTO.Username,
             updateCustomerDTO.Firstname,
             updateCustomerDTO.Lastname,
