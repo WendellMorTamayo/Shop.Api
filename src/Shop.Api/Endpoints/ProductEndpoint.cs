@@ -11,7 +11,8 @@ public static class ProductEndpoint
     {
         var group = app.MapGroup("/products")
                        .WithParameterValidation()
-                       .WithOpenApi();
+                       .WithOpenApi()
+                       .WithTags("Products");
 
         group.MapGet("/", (ProductService productService) => productService.GetProducts());
         group.MapGet("/{id}", (int id, ProductService productService) => productService.GetProductById(id)).WithName(GetProductEndpoint);

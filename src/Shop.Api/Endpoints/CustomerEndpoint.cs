@@ -11,7 +11,8 @@ public static class CustomerEndpoint
     {
         var group = app.MapGroup("/customers")
                        .WithParameterValidation()
-                       .WithOpenApi();
+                       .WithOpenApi()
+                       .WithTags("Customers"); ;
 
         group.MapGet("/", (CustomerService customerService) => customerService.GetCustomers());
         group.MapGet("/{id}", (int id, CustomerService customerService) => customerService.GetCustomerById(id)).WithName(GetCustomerEndpoint);

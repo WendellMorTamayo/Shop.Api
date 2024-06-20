@@ -6,12 +6,13 @@ namespace Shop.Api.Endpoints;
 public static class OrderEndpoint
 {
     private const string GetOrderEndpoint = "GetOrder";
-    
+
     public static RouteGroupBuilder MapOrderEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("/orders")
                        .WithParameterValidation()
-                       .WithOpenApi();
+                       .WithOpenApi()
+                       .WithTags("Orders");
 
         group.MapGet("/", (OrderService orderService) => orderService.GetOrders());
         group.MapGet("/{id}", (int id, OrderService orderService) => orderService.GetOrderById(id)).WithName(GetOrderEndpoint);
