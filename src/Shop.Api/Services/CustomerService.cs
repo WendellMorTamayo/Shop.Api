@@ -57,9 +57,9 @@ public class CustomerService(DataStore dataStore) : ICustomerService
         return Results.NoContent();
     }
 
-    public IResult DeleteCustomerByUsername(string username)
+    public IResult DeleteCustomerById(int id)
     {
-        var customer = _dataStore.Customers.FirstOrDefault(c => c.Username == username);
+        var customer = _dataStore.Customers.FirstOrDefault(c => c.Id == id);
         if (customer == null) return Results.NotFound("Customer not found!");
 
         _dataStore.Customers.Remove(customer);

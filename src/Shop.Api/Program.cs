@@ -22,8 +22,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapCustomerEndpoint();
-app.MapOrderEndpoints();
-app.MapProductEndpoints();
+app.RegisterEndpointModules();
 
 app.Run();

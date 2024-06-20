@@ -8,5 +8,5 @@ public interface ICustomerService
     IResult GetCustomerById(int id);
     IResult CreateCustomer(CustomerRequest createCustomerRequest);
     IResult UpdateCustomer(int id, CustomerRequest updateCustomerRequest);
-    IResult DeleteCustomerByUsername(string username);
+    IResult DeleteCustomerById(int id);
 }

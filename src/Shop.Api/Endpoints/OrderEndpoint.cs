@@ -3,11 +3,11 @@ using Shop.Api.Services;
 
 namespace Shop.Api.Endpoints;
 
-public static class OrderEndpoint
+public class OrderEndpoint : IEndpointModule
 {
     private const string GetOrderEndpoint = "GetOrder";
 
-    public static RouteGroupBuilder MapOrderEndpoints(this WebApplication app)
+    public void RegisterEndpoints(IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/orders")
                        .WithParameterValidation()
@@ -19,7 +19,5 @@ public static class OrderEndpoint
         group.MapPost("/", (OrderRequest createOrderRequest, OrderService orderService) => orderService.CreateOrder(createOrderRequest));
         group.MapPut("/{id}", (int id, OrderRequest updateOrderRequest, OrderService orderService) => orderService.UpdateOrderById(id, updateOrderRequest));
         group.MapDelete("/{id}", (int id, OrderService orderService) => orderService.DeleteOrderById(id));
-
-        return group;
     }
 }
