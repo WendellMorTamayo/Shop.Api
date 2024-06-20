@@ -1,13 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace Shop.Api.Models.DTO;
-public record class OrderDTO(
+public record class ProductRequest(
     [Required]
-    [StringLength(50)]
-    string Username,
+    [StringLength(100)]
+    string Name,
 
     [Required]
-    int ProductId,
+    [StringLength(50)]
+    string Description,
 
     [Range(1, 100_000)]
     decimal Price

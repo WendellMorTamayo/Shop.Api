@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace Shop.Api.Models.DTO;
-public record class CustomerDTO(
+public record class CustomerRequest(
     [Required]
     [StringLength(50)]
     string Username,

@@ -1,5 +1,5 @@
-
 namespace Shop.Api.Models;
+
 public class Order(int id, Product product, Customer customer)
 {
     public int Id { get; set; } = id;
