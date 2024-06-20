@@ -21,28 +21,28 @@ public class ProductService(DataStore dataStore)
         return product is null ? Results.NotFound() : Results.Ok(product);
     }
 
-    public IResult CreateProduct(ProductRequest createProductDTO)
+    public IResult CreateProduct(ProductRequest createProductRequest)
     {
         Product product = new(
             _dataStore.Products.Count + 1,
-            createProductDTO.Name,
-            createProductDTO.Description,
-            createProductDTO.Price
+            createProductRequest.Name,
+            createProductRequest.Description,
+            createProductRequest.Price
         );
         _dataStore.Products.Add(product);
         return Results.CreatedAtRoute(GetProductEndpoint, new { id = product.Id }, product);
     }
 
-    public IResult UpdateProductById(int id, ProductRequest updateProductDTO)
+    public IResult UpdateProductById(int id, ProductRequest updateProductRequest)
     {
         var index = _dataStore.Products.FindIndex(p => p.Id == id);
         if (index == -1) return Results.NotFound("Product not found");
 
         _dataStore.Products[index] = new(
             id,
-            updateProductDTO.Name,
-            updateProductDTO.Description,
-            updateProductDTO.Price
+            updateProductRequest.Name,
+            updateProductRequest.Description,
+            updateProductRequest.Price
         );
         return Results.NoContent();
     }
