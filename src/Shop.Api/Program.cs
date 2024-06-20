@@ -20,5 +20,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapProductEndpoint();
+app.MapCustomerEndpoint();
 
 app.Run();
