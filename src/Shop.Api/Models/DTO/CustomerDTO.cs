@@ -1,4 +1,3 @@
-
 using System.ComponentModel.DataAnnotations;
 
 namespace Shop.Api.Models.DTO;
@@ -9,11 +8,11 @@ public record class CustomerDTO(
 
     [Required]
     [StringLength(50)]
-    string Firstname,
+    string FirstName,
 
     [Required]
     [StringLength(50)]
-    string Lastname,
+    string LastName,
 
     [Required]
     [StringLength(50)]
