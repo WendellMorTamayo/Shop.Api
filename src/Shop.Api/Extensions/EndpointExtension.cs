@@ -1,7 +1,7 @@
 using System.Reflection;
 using Shop.Api.Endpoints;
 
-namespace Shop.Api.Endpoints;
+namespace Shop.Api.Extensions;
 public static class EndpointExtensions
 {
     public static void RegisterEndpointModules(this IEndpointRouteBuilder endpoints)

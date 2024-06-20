@@ -1,5 +1,5 @@
 using Shop.Api.Data;
-using Shop.Api.Endpoints;
+using Shop.Api.Extensions;
 using Shop.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
