@@ -3,7 +3,7 @@ using Shop.Api.Models;
 using Shop.Api.Models.DTO;
 
 namespace Shop.Api.Services;
-public class CustomerService(DataStore dataStore)
+public class CustomerService(DataStore dataStore) : ICustomerService
 {
     private readonly DataStore _dataStore = dataStore;
     private const string GetCustomerEndpoint = "GetCustomer";
@@ -16,7 +16,7 @@ public class CustomerService(DataStore dataStore)
     public IResult GetCustomerById(int id)
     {
         Customer? customer = _dataStore.Customers.Find(c => c.Id == id);
-        
+
         if (customer is null)
         {
             return Results.NotFound("Customer not found!");
@@ -25,7 +25,6 @@ public class CustomerService(DataStore dataStore)
         CustomerResponse customerResponse = new(customer.Username, customer.FirstName, customer.LastName, customer.Email);
         return Results.Ok(customerResponse);
     }
-
 
     public IResult CreateCustomer(CustomerRequest createCustomerRequest)
     {
@@ -50,7 +49,7 @@ public class CustomerService(DataStore dataStore)
         var existingCustomer = _dataStore.Customers.FirstOrDefault(c => c.Id == id);
         if (existingCustomer == null)
         {
-            return Results.BadRequest("Customer with id not found.");
+            return Results.BadRequest("Customer not found.");
         }
 
         var existingUsername = _dataStore.Customers.FirstOrDefault(c => c.Username == updateCustomerRequest.Username && c.Id != id);
@@ -72,7 +71,7 @@ public class CustomerService(DataStore dataStore)
         var customer = _dataStore.Customers.FirstOrDefault(c => c.Username == username);
         if (customer == null)
         {
-            return Results.NotFound();
+            return Results.NotFound("Customer not found!");
         }
 
         _dataStore.Customers.Remove(customer);

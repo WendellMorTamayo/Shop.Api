@@ -4,7 +4,7 @@ using Shop.Api.Models.DTO;
 
 namespace Shop.Api.Services;
 
-public class OrderService(DataStore dataStore)
+public class OrderService(DataStore dataStore) : IOrderService
 {
     private const string GetOrderEndpoint = "GetOrder";
     private readonly DataStore _dataStore = dataStore;
@@ -16,8 +16,8 @@ public class OrderService(DataStore dataStore)
 
     public IResult GetOrderById(int id)
     {
-        Order? order = _dataStore.Orders.Find(o => o.Id == id);
-        
+        Order? order = _dataStore.Orders.Where(o => o.Id == id).FirstOrDefault();
+
         return order is null ? Results.NotFound("Order not found!") : Results.Ok(order);
     }
 
