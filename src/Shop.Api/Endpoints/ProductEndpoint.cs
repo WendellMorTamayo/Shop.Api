@@ -4,7 +4,7 @@ using Shop.Api.Models.DTO;
 namespace Shop.Api.Endpoints;
 public static class ProductEndpoint
 {
-    const string GetProductEndpoint = "GetProduct";
+    const string GET_PRODUCT_ENDPOINT = "GetProduct";
     private static readonly List<Product> Products = [];
 
     public static List<Product> GetProducts()
@@ -28,7 +28,7 @@ public static class ProductEndpoint
             createProductDTO.Price
         );
         Products.Add(product);
-        return Results.CreatedAtRoute(GetProductEndpoint, new { id = product.Id }, product);
+        return Results.CreatedAtRoute(GET_PRODUCT_ENDPOINT, new { id = product.Id }, product);
     }
 
     public static IResult UpdateProductById(int id, ProductDTO updateProductDTO)
@@ -61,7 +61,7 @@ public static class ProductEndpoint
                        .WithOpenApi();
 
         group.MapGet("/", GetProducts);
-        group.MapGet("/{id}", GetProductById).WithName(GetProductEndpoint);
+        group.MapGet("/{id}", GetProductById).WithName(GET_PRODUCT_ENDPOINT);
         group.MapPost("/", CreateProduct);
         group.MapPut("/{id}", UpdateProductById);
         group.MapDelete("/{id}", DeleteProductById);
