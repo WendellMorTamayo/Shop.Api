@@ -1,4 +1,5 @@
 namespace Shop.Api.Models;
+
 public class Customer(int id, string username, string firstName, string lastName, string email)
 {
     public int Id { get; set; } = id;

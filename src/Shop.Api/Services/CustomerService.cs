@@ -4,6 +4,7 @@ using Shop.Api.Models.DTO;
 using Shop.Api.Services.Interfaces;
 
 namespace Shop.Api.Services;
+
 public class CustomerService(DataStore dataStore) : ICustomerService
 {
     private readonly DataStore _dataStore = dataStore;

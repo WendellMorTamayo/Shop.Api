@@ -1,4 +1,5 @@
 namespace Shop.Api.Models;
+
 public class Product(int id, string name, string description, decimal price)
 {
     public int Id { get; set; } = id;
