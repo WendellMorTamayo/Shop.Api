@@ -10,9 +10,9 @@ public class ProductService(DataStore dataStore) : IProductService
     private const string GetProductEndpoint = "GetProduct";
     private readonly DataStore _dataStore = dataStore;
 
-    public List<Product> GetProducts()
+    public IResult GetProducts()
     {
-        return _dataStore.Products;
+        return Results.Ok(_dataStore.Products);
     }
 
     public IResult GetProductById(int id)

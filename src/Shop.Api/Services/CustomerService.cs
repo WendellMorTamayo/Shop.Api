@@ -10,9 +10,9 @@ public class CustomerService(DataStore dataStore) : ICustomerService
     private readonly DataStore _dataStore = dataStore;
     private const string GetCustomerEndpoint = "GetCustomer";
 
-    public List<Customer> GetCustomers()
+    public IResult GetCustomers()
     {
-        return _dataStore.Customers;
+        return Results.Ok(_dataStore.Customers);
     }
 
     public IResult GetCustomerById(int id)

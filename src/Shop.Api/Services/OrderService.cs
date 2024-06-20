@@ -10,9 +10,9 @@ public class OrderService(DataStore dataStore) : IOrderService
     private const string GetOrderEndpoint = "GetOrder";
     private readonly DataStore _dataStore = dataStore;
 
-    public List<Order> GetOrders()
+    public IResult GetOrders()
     {
-        return _dataStore.Orders;
+        return Results.Ok(_dataStore.Orders);
     }
 
     public IResult GetOrderById(int id)
@@ -39,7 +39,7 @@ public class OrderService(DataStore dataStore) : IOrderService
             customer
         );
         _dataStore.Orders.Add(order);
-        
+
         OrderResponse orderResponse = new(customer.Username, product.Name, product.Price);
         return Results.CreatedAtRoute(GetOrderEndpoint, new { id = order.Id }, orderResponse);
     }

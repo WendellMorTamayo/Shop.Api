@@ -4,7 +4,7 @@ using Shop.Api.Models.DTO;
 namespace Shop.Api.Services.Interfaces;
 public interface IOrderService
 {
-    List<Order> GetOrders();
+    IResult GetOrders();
     IResult GetOrderById(int id);
     IResult CreateOrder(OrderRequest createOrderRequest);
     IResult UpdateOrderById(int id, OrderRequest updateOrderRequest);
