@@ -9,11 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<DataStore>();
+
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<OrderService>();
 
+var connString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddSqlite<DataStore>(connString);
 
 // 
 var app = builder.Build();

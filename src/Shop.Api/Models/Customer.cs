@@ -1,10 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Shop.Api.Models;
 
-public class Customer(int id, string username, string firstName, string lastName, string email)
+public record Customer(int Id)
 {
-    public int Id { get; set; } = id;
-    public string Username { get; set; } = username;
-    public string FirstName { get; set; } = firstName;
-    public string LastName { get; set; } = lastName;
-    public string Email { get; set; } = email;
+    [Key]
+    public int Id { get; set; } = Id;
+    public required string Username { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public required string Email { get; set; }
 }

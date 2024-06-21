@@ -1,58 +1,65 @@
 using Shop.Api.Data;
 using Shop.Api.Models;
 using Shop.Api.Models.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace Shop.Api.Services;
 
-public class ProductService(DataStore dataStore) : IShopService<ProductRequest>
+public class ProductService : IShopService<ProductRequest>
 {
-    private readonly DataStore _dataStore = dataStore;
+    private readonly DataStore _dataStore;
     private const string GetProductEndpoint = "GetProduct";
+
+    public ProductService(DataStore dataStore)
+    {
+        _dataStore = dataStore;
+    }
 
     public IResult GetAll()
     {
-        return Results.Ok(_dataStore.Products);
+        return Results.Ok(_dataStore.Products.ToList());
     }
 
     public IResult GetById(int id)
     {
-        Product? product = _dataStore.Products.Find(p => p.Id == id);
+        var product = _dataStore.Products.Find(id);
 
         return product is null ? Results.NotFound() : Results.Ok(product);
     }
 
     public IResult Create(ProductRequest request)
     {
-        Product product = new(
-            _dataStore.Products.Count + 1,
-            request.Name,
-            request.Description,
-            request.Price
-        );
+        Product product = new(_dataStore.Products.Count() + 1)
+        {
+            Name = request.Name,
+            Description = request.Description,
+            Price = request.Price
+        };
         _dataStore.Products.Add(product);
+        _dataStore.SaveChanges();
         return Results.CreatedAtRoute(GetProductEndpoint, new { id = product.Id }, product);
     }
 
     public IResult Update(int id, ProductRequest request)
     {
-        var index = _dataStore.Products.FindIndex(p => p.Id == id);
-        if (index == -1) return Results.NotFound("Product not found");
+        var product = _dataStore.Products.Find(id);
+        if (product == null) return Results.NotFound("Product not found");
 
-        _dataStore.Products[index] = new(
-            id,
-            request.Name,
-            request.Description,
-            request.Price
-        );
+        product.Name = request.Name;
+        product.Description = request.Description;
+        product.Price = request.Price;
+
+        _dataStore.SaveChanges();
         return Results.NoContent();
     }
 
     public IResult Delete(int id)
     {
-        var product = _dataStore.Products.FirstOrDefault(p => p.Id == id);
+        var product = _dataStore.Products.Find(id);
         if (product is null) return Results.NotFound();
 
         _dataStore.Products.Remove(product);
+        _dataStore.SaveChanges();
         return Results.NoContent();
     }
 }

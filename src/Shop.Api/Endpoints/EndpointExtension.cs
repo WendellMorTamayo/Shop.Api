@@ -1,4 +1,3 @@
-using Carter;
 using Shop.Api.Services;
 
 namespace Shop.Api.Endpoints;

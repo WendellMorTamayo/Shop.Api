@@ -1,9 +1,12 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Shop.Api.Models;
 
-public class Product(int id, string name, string description, decimal price)
+public record Product(int Id)
 {
-    public int Id { get; set; } = id;
-    public string Name { get; set; } = name;
-    public string Description { get; set; } = description;
-    public decimal Price { get; set; } = price;
+    [Key]
+    public int Id { get; set; } = Id;
+    public required string Name { get; set; }
+    public required string Description { get; set; }
+    public required decimal Price { get; set; }
 }
