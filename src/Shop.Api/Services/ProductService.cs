@@ -1,24 +1,23 @@
+using Microsoft.EntityFrameworkCore;
 using Shop.Api.Data;
 using Shop.Api.Models;
-using Shop.Api.Models.DTO;
-using Microsoft.EntityFrameworkCore;
+using Shop.Api.Models.Requests;
+using Shop.Api.Models.Response;
 
 namespace Shop.Api.Services;
 
-public class ProductService : IShopService<ProductRequest>
+public class ProductService(DataStore dataStore) : IShopService<ProductRequest>
 {
-    private readonly DataStore _dataStore;
+    private readonly DataStore _dataStore = dataStore;
     private const string GetProductEndpoint = "GetProduct";
 
-    public ProductService(DataStore dataStore)
+
+    public async Task<IResult> GetAll()
     {
-        _dataStore = dataStore;
+        var products = await _dataStore.Products.ToListAsync();
+        return Results.Ok(products);
     }
 
-    public IResult GetAll()
-    {
-        return Results.Ok(_dataStore.Products.ToList());
-    }
 
     public IResult GetById(int id)
     {
@@ -62,4 +61,6 @@ public class ProductService : IShopService<ProductRequest>
         _dataStore.SaveChanges();
         return Results.NoContent();
     }
+
+
 }

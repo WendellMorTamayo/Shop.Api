@@ -1,4 +1,4 @@
-using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using Shop.Api.Data;
 using Shop.Api.Endpoints;
 using Shop.Api.Services;
@@ -15,7 +15,7 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<OrderService>();
 
 var connString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddSqlite<DataStore>(connString);
+builder.Services.AddDbContext<DataStore>(options => options.UseSqlite(connString));
 
 // 
 var app = builder.Build();
@@ -30,5 +30,7 @@ if (app.Environment.IsDevelopment())
 app.MapProductEndpoint();
 app.MapCustomerEndpoint();
 app.MapOrderEndpoint();
+
+await app.MigrateDbAsync();
 
 app.Run();

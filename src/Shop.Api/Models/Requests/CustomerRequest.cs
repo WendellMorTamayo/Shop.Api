@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Shop.Api.Models.DTO;
+namespace Shop.Api.Models.Requests;
 public record class CustomerRequest(
     [Required]
     [StringLength(50)]

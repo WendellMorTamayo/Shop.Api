@@ -1,4 +1,4 @@
-using Shop.Api.Models.DTO;
+using Shop.Api.Models.Requests;
 using Shop.Api.Services;
 
 namespace Shop.Api.Endpoints;

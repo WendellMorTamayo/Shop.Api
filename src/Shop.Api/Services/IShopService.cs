@@ -2,7 +2,7 @@ namespace Shop.Api.Services;
 
 public interface IShopService<TRequest>
 {
-    IResult GetAll();
+    Task<IResult> GetAll();
     IResult GetById(int id);
     IResult Create(TRequest request);
     IResult Update(int id, TRequest request);

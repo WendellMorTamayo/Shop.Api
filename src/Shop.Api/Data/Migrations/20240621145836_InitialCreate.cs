@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Shop.Api.Migrations
+namespace Shop.Api.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -47,7 +47,6 @@ namespace Shop.Api.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    id = table.Column<int>(type: "INTEGER", nullable: false),
                     ProductId = table.Column<int>(type: "INTEGER", nullable: false),
                     BuyerId = table.Column<int>(type: "INTEGER", nullable: false)
                 },

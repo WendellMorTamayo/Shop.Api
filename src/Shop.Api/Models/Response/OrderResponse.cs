@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Shop.Api.Models.DTO;
+namespace Shop.Api.Models.Response;
 
 public record class OrderResponse(
+
     [Required]
     [StringLength(50)]
     string Username,
@@ -12,4 +13,10 @@ public record class OrderResponse(
 
     [Range(1, 100_000)]
     decimal Price
-);
+)
+{
+    internal object ToListAsync()
+    {
+        throw new NotImplementedException();
+    }
+}

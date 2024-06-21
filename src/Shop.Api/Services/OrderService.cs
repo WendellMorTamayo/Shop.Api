@@ -1,24 +1,30 @@
 using Shop.Api.Data;
 using Shop.Api.Models;
-using Shop.Api.Models.DTO;
 using Microsoft.EntityFrameworkCore;
+using Shop.Api.Models.Requests;
+using Shop.Api.Models.Response;
 
 namespace Shop.Api.Services;
 
-public class OrderService : IShopService<OrderRequest>
+public class OrderService(DataStore dataStore) : IShopService<OrderRequest>
 {
-    private readonly DataStore _dataStore;
+    private readonly DataStore _dataStore = dataStore;
     private const string GetOrderEndpoint = "GetOrder";
 
-    public OrderService(DataStore dataStore)
+    public async Task<IResult> GetAll()
     {
-        _dataStore = dataStore;
+        var orders = await _dataStore.Orders
+            .Include(o => o.Product)
+            .Include(o => o.Buyer)
+            .Select(o => new OrderResponse(
+                o.Buyer.Username,
+                o.Product.Name,
+                o.Product.Price
+            ))
+            .ToListAsync();
+        return Results.Ok(orders);
     }
 
-    public IResult GetAll()
-    {
-        return Results.Ok(_dataStore.Orders.Include(o => o.Product).Include(o => o.Buyer).ToList());
-    }
 
     public IResult GetById(int id)
     {
@@ -42,6 +48,7 @@ public class OrderService : IShopService<OrderRequest>
             Product = product,
             Buyer = customer
         };
+
         _dataStore.Orders.Add(order);
         _dataStore.SaveChanges();
 
@@ -71,7 +78,6 @@ public class OrderService : IShopService<OrderRequest>
 
         return Results.NoContent();
     }
-
 
     public IResult Delete(int id)
     {

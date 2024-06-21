@@ -1,24 +1,23 @@
+using Microsoft.EntityFrameworkCore;
 using Shop.Api.Data;
 using Shop.Api.Models;
-using Shop.Api.Models.DTO;
-using Microsoft.EntityFrameworkCore;
+using Shop.Api.Models.Requests;
+using Shop.Api.Models.Response;
 
 namespace Shop.Api.Services;
 
-public class CustomerService : IShopService<CustomerRequest>
+public class CustomerService(DataStore dataStore) : IShopService<CustomerRequest>
 {
-    private readonly DataStore _dataStore;
+    private readonly DataStore _dataStore = dataStore;
     public static readonly string GetCustomerEndpoint = "GetCustomer";
 
-    public CustomerService(DataStore dataStore)
+    public async Task<IResult> GetAll()
     {
-        _dataStore = dataStore;
+        var customers = await _dataStore.Customers.ToListAsync();
+        return Results.Ok(customers);
     }
 
-    public IResult GetAll()
-    {
-        return Results.Ok(_dataStore.Customers.ToList());
-    }
+
 
     public IResult GetById(int id)
     {
