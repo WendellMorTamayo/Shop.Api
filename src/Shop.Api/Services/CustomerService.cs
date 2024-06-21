@@ -13,7 +13,15 @@ public class CustomerService(DataStore dataStore) : IShopService<CustomerRequest
 
     public async Task<IResult> GetAll()
     {
-        var customers = await _dataStore.Customers.ToListAsync();
+        var customers = await _dataStore.Customers
+            .Select(c => new CustomerResponse(
+                c.Username,
+                c.FirstName,
+                c.LastName,
+                c.Email
+                )
+            )
+            .ToListAsync();
         return Results.Ok(customers);
     }
 

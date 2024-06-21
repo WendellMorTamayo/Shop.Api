@@ -14,9 +14,16 @@ public class ProductService(DataStore dataStore) : IShopService<ProductRequest>
 
     public async Task<IResult> GetAll()
     {
-        var products = await _dataStore.Products.ToListAsync();
+        var products = await _dataStore.Products
+            .Select(p => new ProductResponse(
+                p.Name,
+                p.Description,
+                p.Price
+            ))
+            .ToListAsync();
         return Results.Ok(products);
     }
+
 
 
     public IResult GetById(int id)
