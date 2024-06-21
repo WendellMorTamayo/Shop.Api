@@ -6,15 +6,15 @@ using Shop.Api.Models.Response;
 
 namespace Shop.Api.Services;
 
-public class ProductService(DataStore dataStore) : IShopService<ProductRequest>
+public class ProductService(DataStoreContext dataStoreContext) : IShopService<ProductRequest>
 {
-    private readonly DataStore _dataStore = dataStore;
+    private readonly DataStoreContext _dataStoreContext = dataStoreContext;
     private const string GetProductEndpoint = "GetProduct";
 
 
     public async Task<IResult> GetAll()
     {
-        var products = await _dataStore.Products
+        var products = await _dataStoreContext.Products
             .Select(p => new ProductResponse(
                 p.Name,
                 p.Description,
@@ -26,47 +26,72 @@ public class ProductService(DataStore dataStore) : IShopService<ProductRequest>
 
 
 
-    public IResult GetById(int id)
+    public async Task<IResult> GetById(int id)
     {
-        var product = _dataStore.Products.Find(id);
-
-        return product is null ? Results.NotFound() : Results.Ok(product);
+        try {
+            var product = await _dataStoreContext.Products.Where(o => o.Id == id).FirstOrDefaultAsync();
+            return product is null ? Results.NotFound() : Results.Ok(product);
+        } catch (Exception ex) {
+            return Results.BadRequest($"Failed to retrieving product: {ex.Message}");
+        }
     }
 
-    public IResult Create(ProductRequest request)
+    public async Task<IResult> Create(ProductRequest request)
     {
-        Product product = new(_dataStore.Products.Count() + 1)
+        try
         {
-            Name = request.Name,
-            Description = request.Description,
-            Price = request.Price
-        };
-        _dataStore.Products.Add(product);
-        _dataStore.SaveChanges();
-        return Results.CreatedAtRoute(GetProductEndpoint, new { id = product.Id }, product);
+            Product product = new(_dataStoreContext.Products.Count() + 1)
+            {
+                Name = request.Name,
+                Description = request.Description,
+                Price = request.Price
+            };
+            _dataStoreContext.Products.Add(product);
+            await _dataStoreContext.SaveChangesAsync();
+            return Results.CreatedAtRoute(GetProductEndpoint, new { id = product.Id }, product);
+        }
+        catch (Exception ex)
+        {
+            return Results.BadRequest($"Failed to create product: {ex.Message}");
+        }
+
     }
 
-    public IResult Update(int id, ProductRequest request)
+    public async Task<IResult> Update(int id, ProductRequest request)
     {
-        var product = _dataStore.Products.Find(id);
-        if (product == null) return Results.NotFound("Product not found");
+        try
+        {
+            var product = await _dataStoreContext.Products.Where(o => o.Id == id).FirstOrDefaultAsync();
+            if (product == null) return Results.NotFound("Product not found");
 
-        product.Name = request.Name;
-        product.Description = request.Description;
-        product.Price = request.Price;
-
-        _dataStore.SaveChanges();
-        return Results.NoContent();
+            product.Name = request.Name;
+            product.Description = request.Description;
+            product.Price = request.Price;
+            await _dataStoreContext.SaveChangesAsync();
+            return Results.NoContent();
+        }
+        catch (Exception ex)
+        {
+            return Results.BadRequest($"Failed to update product: {ex.Message}");
+        }
     }
 
-    public IResult Delete(int id)
+    public async Task<IResult> Delete(int id)
     {
-        var product = _dataStore.Products.Find(id);
-        if (product is null) return Results.NotFound();
+        try
+        {
+            var product = await _dataStoreContext.Products.Where(o => o.Id == id).FirstOrDefaultAsync();
+            if (product is null) return Results.NotFound();
 
-        _dataStore.Products.Remove(product);
-        _dataStore.SaveChanges();
-        return Results.NoContent();
+            _dataStoreContext.Products.Remove(product);
+            await _dataStoreContext.SaveChangesAsync();
+            return Results.NoContent();
+        }
+        catch (Exception ex)
+        {
+            return Results.BadRequest($"Failed to delete product: {ex.Message}");
+        }
+
     }
 
 

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Shop.Api.Models.Response;
 
-public record class OrderResponse(
+public record class GetOrderResponse(
 
     [Required]
     [StringLength(50)]
