@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Carter" Version="8.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.6" />
     <PackageReference Include="MinimalApis.Extensions" Version="0.11.0" />
     <PackageReference Include="NSwag.AspNetCore" Version="14.0.8" />

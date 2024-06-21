@@ -1,54 +1,53 @@
 using Shop.Api.Data;
 using Shop.Api.Models;
 using Shop.Api.Models.DTO;
-using Shop.Api.Services.Interfaces;
 
 namespace Shop.Api.Services;
 
-public class ProductService(DataStore dataStore) : IProductService
+public class ProductService(DataStore dataStore) : IShopService<ProductRequest>
 {
     private const string GetProductEndpoint = "GetProduct";
     private readonly DataStore _dataStore = dataStore;
 
-    public List<Product> GetProducts()
+    public IResult GetAll()
     {
-        return _dataStore.Products;
+        return Results.Ok(_dataStore.Products);
     }
 
-    public IResult GetProductById(int id)
+    public IResult GetById(int id)
     {
         Product? product = _dataStore.Products.Find(p => p.Id == id);
 
         return product is null ? Results.NotFound() : Results.Ok(product);
     }
 
-    public IResult CreateProduct(ProductRequest createProductRequest)
+    public IResult Create(ProductRequest request)
     {
         Product product = new(
             _dataStore.Products.Count + 1,
-            createProductRequest.Name,
-            createProductRequest.Description,
-            createProductRequest.Price
+            request.Name,
+            request.Description,
+            request.Price
         );
         _dataStore.Products.Add(product);
         return Results.CreatedAtRoute(GetProductEndpoint, new { id = product.Id }, product);
     }
 
-    public IResult UpdateProductById(int id, ProductRequest updateProductRequest)
+    public IResult Update(int id, ProductRequest request)
     {
         var index = _dataStore.Products.FindIndex(p => p.Id == id);
         if (index == -1) return Results.NotFound("Product not found");
 
         _dataStore.Products[index] = new(
             id,
-            updateProductRequest.Name,
-            updateProductRequest.Description,
-            updateProductRequest.Price
+            request.Name,
+            request.Description,
+            request.Price
         );
         return Results.NoContent();
     }
 
-    public IResult DeleteProductById(int id)
+    public IResult Delete(int id)
     {
         var product = _dataStore.Products.FirstOrDefault(p => p.Id == id);
         if (product is null) return Results.NotFound();
