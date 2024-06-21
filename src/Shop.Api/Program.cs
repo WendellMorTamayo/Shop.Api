@@ -1,3 +1,4 @@
+using System.Reflection;
 using Shop.Api.Data;
 using Shop.Api.Endpoints;
 using Shop.Api.Services;
@@ -12,6 +13,8 @@ builder.Services.AddSingleton<DataStore>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<OrderService>();
+
+
 // 
 var app = builder.Build();
 

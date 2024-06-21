@@ -2,7 +2,8 @@ using Carter;
 using Shop.Api.Services;
 
 namespace Shop.Api.Endpoints;
-public static class EndpointExtensions
+
+public static class EndpointExtension
 {
     public static RouteGroupBuilder MapEndpoints<TService, TRequest>(this WebApplication app, string routePrefix, string entityName)
         where TService : IShopService<TRequest>
