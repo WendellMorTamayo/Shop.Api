@@ -8,7 +8,7 @@ namespace Shop.Api.Services;
 public class CustomerService(DataStore dataStore) : ICustomerService
 {
     private readonly DataStore _dataStore = dataStore;
-    private const string GetCustomerEndpoint = "GetCustomer";
+    public static readonly string GetCustomerEndpoint = "GetCustomer";
 
     public IResult GetCustomers()
     {

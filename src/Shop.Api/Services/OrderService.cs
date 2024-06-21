@@ -7,8 +7,8 @@ namespace Shop.Api.Services;
 
 public class OrderService(DataStore dataStore) : IOrderService
 {
-    private const string GetOrderEndpoint = "GetOrder";
     private readonly DataStore _dataStore = dataStore;
+    public static readonly string GetOrderEndpoint = "GetOrder";
 
     public IResult GetOrders()
     {
