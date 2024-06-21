@@ -12,7 +12,7 @@ builder.Services.AddSingleton<DataStore>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<OrderService>();
-
+// 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
