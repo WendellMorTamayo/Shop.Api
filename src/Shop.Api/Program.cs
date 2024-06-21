@@ -15,7 +15,7 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<OrderService>();
 
 var connString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<DataStore>(options => options.UseSqlite(connString));
+builder.Services.AddDbContext<DataStoreContext>(options => options.UseSqlite(connString));
 
 // 
 var app = builder.Build();

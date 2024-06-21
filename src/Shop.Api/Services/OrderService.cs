@@ -6,14 +6,14 @@ using Shop.Api.Models.Response;
 
 namespace Shop.Api.Services;
 
-public class OrderService(DataStore dataStore) : IShopService<OrderRequest>
+public class OrderService(DataStoreContext _dataStoreContext) : IShopService<OrderRequest>
 {
-    private readonly DataStore _dataStore = dataStore;
+    private readonly DataStoreContext _dataStoreContext = _dataStoreContext;
     private const string GetOrderEndpoint = "GetOrder";
 
     public async Task<IResult> GetAll()
     {
-        var orders = await _dataStore.Orders
+        var orders = await _dataStoreContext.Orders
             .Include(o => o.Product)
             .Include(o => o.Buyer)
             .Select(o => new OrderResponse(
@@ -26,66 +26,104 @@ public class OrderService(DataStore dataStore) : IShopService<OrderRequest>
     }
 
 
-    public IResult GetById(int id)
+    public async Task<IResult> GetById(int id)
     {
-        var order = _dataStore.Orders.Include(o => o.Product).Include(o => o.Buyer).FirstOrDefault(o => o.Id == id);
-        if (order is null) return Results.NotFound("Order not found!");
+        try
+        {
+            var order = await _dataStoreContext.Orders
+                .Include(o => o.Product)
+                .Include(o => o.Buyer)
+                .FirstOrDefaultAsync(o => o.Id == id);
 
-        OrderResponse orderResponse = new(order.Buyer.Username, order.Product.Name, order.Product.Price);
-        return Results.Ok(orderResponse);
+            if (order == null)
+                return Results.NotFound("Order not found!");
+
+            GetOrderResponse getOrderResponse = new(order.Buyer.Username, order.Product.Name, order.Product.Price);
+            return Results.Ok(getOrderResponse);
+        }
+        catch (Exception ex)
+        {
+            return Results.BadRequest($"Failed to fetch order: {ex.Message}");
+        }
     }
 
-    public IResult Create(OrderRequest request)
+
+    public async Task<IResult> Create(OrderRequest request)
     {
-        var product = _dataStore.Products.Find(request.ProductId);
-        if (product is null) return Results.BadRequest("Product not found.");
+        var product = await _dataStoreContext.Products.Where(p => p.Id == request.ProductId).FirstOrDefaultAsync();
+        if (product is null)
+            return Results.BadRequest("Product not found.");
 
-        var customer = _dataStore.Customers.FirstOrDefault(c => c.Username == request.Username);
-        if (customer is null) return Results.BadRequest("Customer not found.");
+        var customer = await _dataStoreContext.Customers.FirstOrDefaultAsync(c => c.Username == request.Username);
+        if (customer is null)
+            return Results.BadRequest("Customer not found.");
 
-        Order order = new(_dataStore.Orders.Count() + 1)
+        Order order = new(_dataStoreContext.Orders.Count() + 1)
         {
             Product = product,
             Buyer = customer
         };
 
-        _dataStore.Orders.Add(order);
-        _dataStore.SaveChanges();
+        _dataStoreContext.Orders.Add(order);
+        await _dataStoreContext.SaveChangesAsync();
 
-        OrderResponse orderResponse = new(customer.Username, product.Name, product.Price);
-        return Results.CreatedAtRoute(GetOrderEndpoint, new { id = order.Id }, orderResponse);
+        CreateOrderResponse createOrderResponse = new(customer.Username, product.Name, product.Price);
+        return Results.CreatedAtRoute(GetOrderEndpoint, new { id = order.Id }, createOrderResponse);
     }
 
-    public IResult Update(int id, OrderRequest request)
+    public async Task<IResult> Update(int id, OrderRequest request)
     {
-        var existingOrder = _dataStore.Orders.Include(o => o.Product).Include(o => o.Buyer).FirstOrDefault(o => o.Id == id);
-        if (existingOrder == null) return Results.NotFound("Order not found.");
-
-        var product = _dataStore.Products.Find(request.ProductId);
-        if (product is null) return Results.BadRequest("Product not found.");
-
-        var customer = _dataStore.Customers.FirstOrDefault(c => c.Username == request.Username);
-        if (customer is null) return Results.BadRequest("Customer not found.");
-
-        Order updatedOrder = new(id)
+        try
         {
-            Product = product,
-            Buyer = customer
-        };
+            var existingOrder = await _dataStoreContext.Orders
+                .Include(o => o.Product)
+                .Include(o => o.Buyer)
+                .FirstOrDefaultAsync(o => o.Id == id);
 
-        _dataStore.Entry(existingOrder).CurrentValues.SetValues(updatedOrder);
-        _dataStore.SaveChanges();
+            if (existingOrder == null)
+                return Results.NotFound("Order not found.");
 
-        return Results.NoContent();
+            var product = await _dataStoreContext.Products
+                .Where(p => p.Id == request.ProductId)
+                .FirstOrDefaultAsync();
+
+            if (product == null)
+                return Results.BadRequest("Product not found.");
+
+            var customer = await _dataStoreContext.Customers
+                .FirstOrDefaultAsync(c => c.Username == request.Username);
+
+            if (customer == null)
+                return Results.BadRequest("Customer not found.");
+
+            existingOrder.Product = product;
+            existingOrder.Buyer = customer;
+
+            await _dataStoreContext.SaveChangesAsync();
+            return Results.NoContent();
+        }
+        catch (Exception ex)
+        {
+            return Results.BadRequest($"Failed to update order: {ex.Message}");
+        }
     }
 
-    public IResult Delete(int id)
-    {
-        var order = _dataStore.Orders.Find(id);
-        if (order == null) return Results.NotFound();
 
-        _dataStore.Orders.Remove(order);
-        _dataStore.SaveChanges();
-        return Results.NoContent();
+    public async Task<IResult> Delete(int id)
+    {
+        try
+        {
+            var order = await _dataStoreContext.Orders.Where(o => o.Id == id).FirstOrDefaultAsync();
+            if (order == null) return Results.NotFound();
+
+            _dataStoreContext.Orders.Remove(order);
+            await _dataStoreContext.SaveChangesAsync();
+            return Results.NoContent();
+        }
+        catch (Exception ex)
+        {
+            return Results.BadRequest($"Failed to delete order: {ex.Message}");
+        }
+
     }
 }
