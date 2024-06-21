@@ -1,5 +1,5 @@
 using Shop.Api.Data;
-using Shop.Api.Extensions;
+using Shop.Api.Endpoints;
 using Shop.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +22,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.RegisterEndpointModules();
+app.MapProductEndpoint();
+app.MapCustomerEndpoint();
+app.MapOrderEndpoint();
 
 app.Run();

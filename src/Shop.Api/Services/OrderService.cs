@@ -1,21 +1,20 @@
 using Shop.Api.Data;
 using Shop.Api.Models;
 using Shop.Api.Models.DTO;
-using Shop.Api.Services.Interfaces;
 
 namespace Shop.Api.Services;
 
-public class OrderService(DataStore dataStore) : IOrderService
+public class OrderService(DataStore dataStore) : IShopService<OrderRequest>
 {
     private readonly DataStore _dataStore = dataStore;
     public static readonly string GetOrderEndpoint = "GetOrder";
 
-    public IResult GetOrders()
+    public IResult GetAll()
     {
         return Results.Ok(_dataStore.Orders);
     }
 
-    public IResult GetOrderById(int id)
+    public IResult GetById(int id)
     {
         Order? order = _dataStore.Orders.Where(o => o.Id == id).FirstOrDefault();
         if (order is null) return Results.NotFound("Order not found!");
@@ -25,12 +24,12 @@ public class OrderService(DataStore dataStore) : IOrderService
         return Results.Ok(orderResponse);
     }
 
-    public IResult CreateOrder(OrderRequest createOrderRequest)
+    public IResult Create(OrderRequest request)
     {
-        Product? product = _dataStore.Products.FirstOrDefault(p => p.Id == createOrderRequest.ProductId);
+        Product? product = _dataStore.Products.FirstOrDefault(p => p.Id == request.ProductId);
         if (product is null) return Results.BadRequest("Product not found.");
 
-        Customer? customer = _dataStore.Customers.FirstOrDefault(c => c.Username == createOrderRequest.Username);
+        Customer? customer = _dataStore.Customers.FirstOrDefault(c => c.Username == request.Username);
         if (customer is null) return Results.BadRequest("Customer not found.");
 
         Order order = new(
@@ -44,15 +43,15 @@ public class OrderService(DataStore dataStore) : IOrderService
         return Results.CreatedAtRoute(GetOrderEndpoint, new { id = order.Id }, orderResponse);
     }
 
-    public IResult UpdateOrderById(int id, OrderRequest updateOrderRequest)
+    public IResult Update(int id, OrderRequest request)
     {
         var index = _dataStore.Orders.FindIndex(o => o.Id == id);
         if (index == -1) return Results.NotFound("Order with id not found.");
 
-        Product? product = _dataStore.Products.FirstOrDefault(p => p.Id == updateOrderRequest.ProductId);
+        Product? product = _dataStore.Products.FirstOrDefault(p => p.Id == request.ProductId);
         if (product is null) return Results.BadRequest("Product not found.");
 
-        Customer? customer = _dataStore.Customers.FirstOrDefault(c => c.Username == updateOrderRequest.Username);
+        Customer? customer = _dataStore.Customers.FirstOrDefault(c => c.Username == request.Username);
         if (customer is null) return Results.BadRequest("Customer not found.");
 
         _dataStore.Orders[index] = new(
@@ -63,7 +62,7 @@ public class OrderService(DataStore dataStore) : IOrderService
         return Results.NoContent();
     }
 
-    public IResult DeleteOrderById(int id)
+    public IResult Delete(int id)
     {
         Order? order = _dataStore.Orders.FirstOrDefault(o => o.Id == id);
         if (order is null) return Results.NotFound();

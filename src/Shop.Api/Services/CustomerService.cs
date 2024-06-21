@@ -1,21 +1,20 @@
 using Shop.Api.Data;
 using Shop.Api.Models;
 using Shop.Api.Models.DTO;
-using Shop.Api.Services.Interfaces;
 
 namespace Shop.Api.Services;
 
-public class CustomerService(DataStore dataStore) : ICustomerService
+public class CustomerService(DataStore dataStore) : IShopService<CustomerRequest>
 {
     private readonly DataStore _dataStore = dataStore;
     public static readonly string GetCustomerEndpoint = "GetCustomer";
 
-    public IResult GetCustomers()
+    public IResult GetAll()
     {
         return Results.Ok(_dataStore.Customers);
     }
 
-    public IResult GetCustomerById(int id)
+    public IResult GetById(int id)
     {
         Customer? customer = _dataStore.Customers.Find(c => c.Id == id);
 
@@ -25,39 +24,39 @@ public class CustomerService(DataStore dataStore) : ICustomerService
         return Results.Ok(customerResponse);
     }
 
-    public IResult CreateCustomer(CustomerRequest createCustomerRequest)
+    public IResult Create(CustomerRequest request)
     {
-        var existingUsername = _dataStore.Customers.FirstOrDefault(c => c.Username == createCustomerRequest.Username);
+        var existingUsername = _dataStore.Customers.FirstOrDefault(c => c.Username == request.Username);
         if (existingUsername != null) return Results.BadRequest("Username already exists.");
 
         Customer customer = new(
             _dataStore.Customers.Count + 1,
-            createCustomerRequest.Username,
-            createCustomerRequest.FirstName,
-            createCustomerRequest.LastName,
-            createCustomerRequest.Email
+            request.Username,
+            request.FirstName,
+            request.LastName,
+            request.Email
         );
         _dataStore.Customers.Add(customer);
         return Results.CreatedAtRoute(GetCustomerEndpoint, new { id = customer.Id }, customer);
     }
 
-    public IResult UpdateCustomer(int id, CustomerRequest updateCustomerRequest)
+    public IResult Update(int id, CustomerRequest request)
     {
         var existingCustomer = _dataStore.Customers.FirstOrDefault(c => c.Id == id);
         if (existingCustomer == null) return Results.BadRequest("Customer not found.");
 
-        var existingUsername = _dataStore.Customers.FirstOrDefault(c => c.Username == updateCustomerRequest.Username && c.Id != id);
+        var existingUsername = _dataStore.Customers.FirstOrDefault(c => c.Username == request.Username && c.Id != id);
         if (existingUsername != null) return Results.BadRequest("Username already exists.");
 
-        existingCustomer.Username = updateCustomerRequest.Username;
-        existingCustomer.FirstName = updateCustomerRequest.FirstName;
-        existingCustomer.LastName = updateCustomerRequest.LastName;
-        existingCustomer.Email = updateCustomerRequest.Email;
+        existingCustomer.Username = request.Username;
+        existingCustomer.FirstName = request.FirstName;
+        existingCustomer.LastName = request.LastName;
+        existingCustomer.Email = request.Email;
 
         return Results.NoContent();
     }
 
-    public IResult DeleteCustomerById(int id)
+    public IResult Delete(int id)
     {
         var customer = _dataStore.Customers.FirstOrDefault(c => c.Id == id);
         if (customer == null) return Results.NotFound("Customer not found!");
@@ -65,4 +64,6 @@ public class CustomerService(DataStore dataStore) : ICustomerService
         _dataStore.Customers.Remove(customer);
         return Results.NoContent();
     }
+
+
 }
