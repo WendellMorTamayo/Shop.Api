@@ -7,8 +7,5 @@ public record class OrderRequest(
     string Username,
 
     [Required]
-    Guid ProductId,
-
-    [Range(1, 100_000)]
-    decimal Price
+    Guid ProductId
 );

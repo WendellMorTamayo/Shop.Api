@@ -9,7 +9,7 @@ public class ProductEndpoint : CarterModule
 {
     public override void AddRoutes(IEndpointRouteBuilder builder)
     {
-        builder.MapServiceEndpoints<ProductService, ProductRequest>("/products", "Product", HandleAdditionalRoutes);
+        builder.MapServiceEndpoints<ProductService, ProductRequest>("/products", "Product");
     }
     public void HandleAdditionalRoutes(RouteGroupBuilder builder)
     {

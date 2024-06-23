@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace Shop.Api.Models.Response;
+
 public record class CustomerResponse(
     [Required]
     [StringLength(50)]

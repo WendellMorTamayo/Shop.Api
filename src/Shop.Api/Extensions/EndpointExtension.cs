@@ -1,18 +1,16 @@
-using System.Reflection;
 using Carter;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Shop.Api.Endpoints;
 using Shop.Api.Services;
 
 namespace Shop.Api.Extensions;
 public static class EndpointExtension
 {
-    public static RouteGroupBuilder MapServiceEndpoints<TService, TRequest>(
+    public static RouteGroupBuilder MapServiceEndpoints<TService, TRequest>
+    (
         this IEndpointRouteBuilder app,
         string routePrefix,
         string entityName,
-        Action<RouteGroupBuilder>? additionalRoutes)
+        Action<RouteGroupBuilder>? additionalRoutes = null
+    )
         where TService : IShopService<TRequest>
     {
         var group = app.MapGroup(routePrefix)
