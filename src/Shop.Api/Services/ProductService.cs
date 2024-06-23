@@ -15,7 +15,8 @@ public class ProductService(DataStoreContext dataStoreContext) : IShopService<Pr
     public async Task<IResult> GetAll()
     {
         var products = await _dataStoreContext.Products
-            .Select(p => new ProductResponse(
+            .Select(p => new GetProductResponse(
+                p.Id,
                 p.Name,
                 p.Description,
                 p.Price
@@ -26,12 +27,15 @@ public class ProductService(DataStoreContext dataStoreContext) : IShopService<Pr
 
 
 
-    public async Task<IResult> GetById(int id)
+    public async Task<IResult> GetById(Guid id)
     {
-        try {
+        try
+        {
             var product = await _dataStoreContext.Products.Where(o => o.Id == id).FirstOrDefaultAsync();
             return product is null ? Results.NotFound() : Results.Ok(product);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             return Results.BadRequest($"Failed to retrieving product: {ex.Message}");
         }
     }
@@ -40,7 +44,7 @@ public class ProductService(DataStoreContext dataStoreContext) : IShopService<Pr
     {
         try
         {
-            Product product = new(_dataStoreContext.Products.Count() + 1)
+            Product product = new()
             {
                 Name = request.Name,
                 Description = request.Description,
@@ -57,7 +61,7 @@ public class ProductService(DataStoreContext dataStoreContext) : IShopService<Pr
 
     }
 
-    public async Task<IResult> Update(int id, ProductRequest request)
+    public async Task<IResult> Update(Guid id, ProductRequest request)
     {
         try
         {
@@ -76,7 +80,7 @@ public class ProductService(DataStoreContext dataStoreContext) : IShopService<Pr
         }
     }
 
-    public async Task<IResult> Delete(int id)
+    public async Task<IResult> Delete(Guid id)
     {
         try
         {

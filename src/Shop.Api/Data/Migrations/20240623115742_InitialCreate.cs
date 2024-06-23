@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -14,12 +15,11 @@ namespace Shop.Api.Data.Migrations
                 name: "Customers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Username = table.Column<string>(type: "TEXT", nullable: false),
-                    FirstName = table.Column<string>(type: "TEXT", nullable: false),
-                    LastName = table.Column<string>(type: "TEXT", nullable: false),
-                    Email = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Username = table.Column<string>(type: "text", nullable: false),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,11 +30,10 @@ namespace Shop.Api.Data.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
-                    Price = table.Column<decimal>(type: "TEXT", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Price = table.Column<decimal>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,10 +44,9 @@ namespace Shop.Api.Data.Migrations
                 name: "Orders",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ProductId = table.Column<int>(type: "INTEGER", nullable: false),
-                    BuyerId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uuid", nullable: false),
+                    BuyerId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {

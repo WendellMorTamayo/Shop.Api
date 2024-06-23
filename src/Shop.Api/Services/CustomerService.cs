@@ -14,7 +14,8 @@ public class CustomerService(DataStoreContext dataStoreContext) : IShopService<C
     public async Task<IResult> GetAll()
     {
         var customers = await _dataStoreContext.Customers
-            .Select(c => new CustomerResponse(
+            .Select(c => new GetCustomerResponse(
+                c.Id,
                 c.Username,
                 c.FirstName,
                 c.LastName,
@@ -24,13 +25,13 @@ public class CustomerService(DataStoreContext dataStoreContext) : IShopService<C
         return Results.Ok(customers);
     }
 
-    public async Task<IResult> GetById(int id)
+    public async Task<IResult> GetById(Guid id)
     {
         Customer? customer = await _dataStoreContext.Customers.FirstOrDefaultAsync(c => c.Id == id);
 
         if (customer is null) return Results.NotFound("Customer not found!");
 
-        GetCustomerResponse getCustomerResponse = new(customer.Username, customer.FirstName, customer.LastName, customer.Email);
+        GetCustomerResponse getCustomerResponse = new(customer.Id, customer.Username, customer.FirstName, customer.LastName, customer.Email);
         return Results.Ok(getCustomerResponse);
     }
 
@@ -41,7 +42,7 @@ public class CustomerService(DataStoreContext dataStoreContext) : IShopService<C
             var existingUsername = await _dataStoreContext.Customers.FirstOrDefaultAsync(c => c.Username == request.Username);
             if (existingUsername != null) return Results.BadRequest("Username already exists.");
 
-            Customer customer = new(_dataStoreContext.Customers.Count() + 1)
+            Customer customer = new()
             {
                 Username = request.Username,
                 FirstName = request.FirstName,
@@ -58,7 +59,7 @@ public class CustomerService(DataStoreContext dataStoreContext) : IShopService<C
         }
     }
 
-    public async Task<IResult> Update(int id, CustomerRequest request)
+    public async Task<IResult> Update(Guid id, CustomerRequest request)
     {
         try
         {
@@ -83,7 +84,7 @@ public class CustomerService(DataStoreContext dataStoreContext) : IShopService<C
 
     }
 
-    public async Task<IResult> Delete(int id)
+    public async Task<IResult> Delete(Guid id)
     {
         try
         {

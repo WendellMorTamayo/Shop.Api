@@ -2,10 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Shop.Api.Models;
 
-public record Order(int Id)
+public record Order
 {
     [Key]
-    public int Id { get; set; } = Id;
+    public Guid Id { get; set; } = new();
     public required Product Product { get; set; }
     public required Customer Buyer { get; set; }
 }

@@ -1,12 +1,26 @@
+using Shop.Api.Extensions;
 using Shop.Api.Models.Requests;
 using Shop.Api.Services;
+using Carter;
 
 namespace Shop.Api.Endpoints;
 
-public static class CustomerEndpoint
+public class CustomerEndpoint : CarterModule
 {
-    public static RouteGroupBuilder MapCustomerEndpoint(this WebApplication app)
+    public override void AddRoutes(IEndpointRouteBuilder app)
     {
-        return app.MapEndpoints<CustomerService, CustomerRequest>("/customers", "Customer");
+        app.MapServiceEndpoints<CustomerService, CustomerRequest>("/customers", "Customer", HandleAdditionalRoutes);
+    }
+
+    public void HandleAdditionalRoutes(RouteGroupBuilder builder)
+    {
+        builder.MapGet("/special-route", (CustomerService service) =>
+        {
+            return Results.Ok("This is a special route!");
+        });
+        builder.MapGet("/special-routes", (CustomerService service) =>
+        {
+            return Results.Ok("This is a special route!");
+        });
     }
 }

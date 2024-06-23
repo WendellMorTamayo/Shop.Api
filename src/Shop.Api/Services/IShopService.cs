@@ -3,8 +3,8 @@ namespace Shop.Api.Services;
 public interface IShopService<TRequest>
 {
     Task<IResult> GetAll();
-    Task<IResult> GetById(int id);
+    Task<IResult> GetById(Guid id);
     Task<IResult> Create(TRequest request);
-    Task<IResult> Update(int id, TRequest request);
-    Task<IResult> Delete(int id);
+    Task<IResult> Update(Guid id, TRequest request);
+    Task<IResult> Delete(Guid id);
 }
