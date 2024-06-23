@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 namespace Shop.Api.Models.Response;
 
 public record class OrderResponse(
-
     [Required]
     [StringLength(50)]
     string Username,

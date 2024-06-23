@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Shop.Api.Data;
 
-namespace Shop.Api.Data;
+namespace Shop.Api.Extensions;
 
 public static class DataExtension
 {

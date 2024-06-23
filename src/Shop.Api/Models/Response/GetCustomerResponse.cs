@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 namespace Shop.Api.Models.Response;
 public record class GetCustomerResponse(
     [Required]
+    Guid Id,
+
+    [Required]
     [StringLength(50)]
     string Username,
 

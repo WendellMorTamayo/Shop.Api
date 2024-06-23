@@ -1,18 +1,20 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace Shop.Api.Models.Response;
-
-public record class GetOrderResponse(
+public record class GetProductResponse
+(
     [Required]
     Guid Id,
 
     [Required]
-    [StringLength(50)]
-    string Username,
+    [StringLength(100)]
+    string Name,
 
     [Required]
-    string ProductName,
+    [StringLength(256)]
+    string Description,
 
     [Range(1, 100_000)]
     decimal Price
 );
+

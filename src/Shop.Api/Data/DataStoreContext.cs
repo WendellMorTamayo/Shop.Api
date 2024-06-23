@@ -5,7 +5,7 @@ namespace Shop.Api.Data;
 
 public class DataStoreContext(DbContextOptions<DataStoreContext> options) : DbContext(options)
 {
-    public DbSet<Product> Products { get; set; }
-    public DbSet<Customer> Customers { get; set; }
-    public DbSet<Order> Orders { get; set; }
+    public required DbSet<Product> Products { get; set; }
+    public required DbSet<Customer> Customers { get; set; }
+    public required DbSet<Order> Orders { get; set; }
 }

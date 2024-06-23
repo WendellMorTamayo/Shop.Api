@@ -16,7 +16,8 @@ public class OrderService(DataStoreContext _dataStoreContext) : IShopService<Ord
         var orders = await _dataStoreContext.Orders
             .Include(o => o.Product)
             .Include(o => o.Buyer)
-            .Select(o => new OrderResponse(
+            .Select(o => new GetOrderResponse(
+                o.Id,
                 o.Buyer.Username,
                 o.Product.Name,
                 o.Product.Price
@@ -26,7 +27,7 @@ public class OrderService(DataStoreContext _dataStoreContext) : IShopService<Ord
     }
 
 
-    public async Task<IResult> GetById(int id)
+    public async Task<IResult> GetById(Guid id)
     {
         try
         {
@@ -38,7 +39,7 @@ public class OrderService(DataStoreContext _dataStoreContext) : IShopService<Ord
             if (order == null)
                 return Results.NotFound("Order not found!");
 
-            GetOrderResponse getOrderResponse = new(order.Buyer.Username, order.Product.Name, order.Product.Price);
+            GetOrderResponse getOrderResponse = new(order.Id, order.Buyer.Username, order.Product.Name, order.Product.Price);
             return Results.Ok(getOrderResponse);
         }
         catch (Exception ex)
@@ -58,7 +59,7 @@ public class OrderService(DataStoreContext _dataStoreContext) : IShopService<Ord
         if (customer is null)
             return Results.BadRequest("Customer not found.");
 
-        Order order = new(_dataStoreContext.Orders.Count() + 1)
+        Order order = new()
         {
             Product = product,
             Buyer = customer
@@ -71,7 +72,7 @@ public class OrderService(DataStoreContext _dataStoreContext) : IShopService<Ord
         return Results.CreatedAtRoute(GetOrderEndpoint, new { id = order.Id }, createOrderResponse);
     }
 
-    public async Task<IResult> Update(int id, OrderRequest request)
+    public async Task<IResult> Update(Guid id, OrderRequest request)
     {
         try
         {
@@ -109,7 +110,7 @@ public class OrderService(DataStoreContext _dataStoreContext) : IShopService<Ord
     }
 
 
-    public async Task<IResult> Delete(int id)
+    public async Task<IResult> Delete(Guid id)
     {
         try
         {
