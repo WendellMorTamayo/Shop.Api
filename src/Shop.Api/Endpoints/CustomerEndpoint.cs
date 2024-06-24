@@ -18,7 +18,7 @@ public class CustomerEndpoint : CarterModule
         {
             return Results.Ok("This is a special route!");
         });
-        builder.MapGet("/special-routes", (CustomerService service) =>
+        builder.MapGet("/special-test", (CustomerService service) =>
         {
             return Results.Ok("This is a special route!");
         });
